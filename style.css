@@ -1,1 +1,43 @@
+body {
+  margin: 0;
+  font-family: Arial, sans-serif;
+  background: #0b0c10;
+  color: white;
+}
 
+.hero {
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  background: linear-gradient(
+    rgba(0,0,0,0.7),
+    rgba(0,0,0,0.9)
+  );
+  text-align: center;
+}
+
+.logo {
+  width: 180px;
+  margin-bottom: 20px;
+}
+
+h1 {
+  margin: 10px 0;
+}
+
+p {
+  color: #d6b25e;
+  margin-bottom: 30px;
+}
+
+button {
+  padding: 12px 25px;
+  border: none;
+  background: #d6b25e;
+  color: black;
+  font-weight: bold;
+  border-radius: 25px;
+  cursor: pointer;
+}
