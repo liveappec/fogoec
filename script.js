@@ -106,7 +106,7 @@ async function verificarDisponibilidad() {
   formDatos.classList.add("hidden");
 
   try {
-    const response = await fetch(`${WEB_APP_URL}?action=disponibilidad&fecha=${fecha}&hora=${hora}`);
+    const response = await fetch(`${WEB_APP_URL}?action=disponibilidad&fecha=${fecha}&hora=${hora}&t=${Date.now()}`);
     const data = await response.json();
 
     if (!data.ok) {
