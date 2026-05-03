@@ -5,47 +5,67 @@
 body {
   margin: 0;
   font-family: Arial, sans-serif;
-  background: #0b0b08;
-  color: #fff;
   min-height: 100vh;
-  background-image:
-    linear-gradient(rgba(0,0,0,.62), rgba(0,0,0,.86)),
+  background:
+    linear-gradient(rgba(0,0,0,.55), rgba(0,0,0,.88)),
     url("hero-fogo.png");
   background-size: cover;
   background-position: center;
   background-attachment: fixed;
+  color: #fff;
 }
 
-.container {
-  width: 92%;
-  max-width: 430px;
-  margin: 0 auto;
-  padding: 34px 18px;
+.app {
+  width: 100%;
   min-height: 100vh;
+  padding: 24px 14px;
   display: flex;
-  flex-direction: column;
+  align-items: center;
   justify-content: center;
 }
 
+.hero-card {
+  width: 100%;
+  max-width: 460px;
+  padding: 28px 18px;
+  border-radius: 28px;
+  background: rgba(10, 10, 8, .78);
+  border: 1px solid rgba(214, 178, 94, .35);
+  backdrop-filter: blur(10px);
+  box-shadow: 0 20px 60px rgba(0,0,0,.45);
+}
+
 .logo {
-  width: 210px;
-  max-width: 80%;
+  width: 220px;
+  max-width: 82%;
   display: block;
-  margin: 0 auto 24px;
+  margin: 0 auto 22px;
   object-fit: contain;
 }
 
 h1 {
   text-align: center;
-  font-size: 30px;
-  margin: 0 0 24px;
-  color: #f5ead5;
+  margin: 0;
+  color: #f7ead1;
+  font-size: 31px;
+}
+
+.subtitle {
+  text-align: center;
+  color: #d6b25e;
+  margin: 8px 0 24px;
+  font-size: 15px;
+}
+
+.form-box {
+  width: 100%;
 }
 
 label {
+  display: block;
+  margin: 14px 0 6px;
+  color: #f0dfbf;
   font-size: 14px;
-  margin: 12px 0 6px;
-  color: #e9d7b7;
 }
 
 input,
@@ -53,16 +73,16 @@ select,
 textarea {
   width: 100%;
   padding: 14px;
-  border-radius: 14px;
-  border: 1px solid rgba(214, 178, 94, .5);
-  background: rgba(255,255,255,.92);
+  border-radius: 15px;
+  border: 1px solid rgba(214, 178, 94, .55);
+  background: rgba(255,255,255,.94);
   color: #111;
   font-size: 16px;
   outline: none;
 }
 
 textarea {
-  min-height: 90px;
+  min-height: 86px;
   resize: none;
 }
 
@@ -71,11 +91,11 @@ button {
   margin-top: 20px;
   padding: 15px;
   border: none;
-  border-radius: 30px;
+  border-radius: 999px;
   background: #d96b27;
-  color: #fff;
-  font-weight: bold;
+  color: white;
   font-size: 16px;
+  font-weight: bold;
   cursor: pointer;
 }
 
@@ -83,41 +103,35 @@ button:hover {
   background: #b94f1d;
 }
 
-#disponibilidad {
+.status-box {
   margin: 18px 0;
-  padding: 16px;
+  padding: 15px;
   border-radius: 18px;
-  background: rgba(245, 234, 213, .92);
-  color: #1b1b1b;
+  background: rgba(247, 234, 209, .95);
+  color: #191916;
   text-align: center;
   font-weight: bold;
+  line-height: 1.4;
 }
 
-#disponibilidad p {
-  margin: 6px 0;
-}
-
-#disponibilidad a {
+.status-box a {
   display: block;
   margin-top: 12px;
   padding: 13px;
-  border-radius: 30px;
+  border-radius: 999px;
   background: #5f6f3a;
   color: white;
   text-decoration: none;
 }
 
-#formDatos {
-  animation: fadeIn .3s ease;
+.hidden {
+  display: none;
 }
 
-@keyframes fadeIn {
-  from {
-    opacity: 0;
-    transform: translateY(8px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
+.address {
+  text-align: center;
+  margin: 22px 0 0;
+  font-size: 13px;
+  color: #e6d6b6;
+  line-height: 1.4;
 }
