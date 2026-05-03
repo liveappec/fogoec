@@ -169,3 +169,65 @@ button:hover {
   margin: 0;
   font-weight: bold;
 }
+.reserva-card {
+  margin-top: 18px;
+  padding: 16px;
+  border-radius: 20px;
+  background: rgba(247, 234, 209, .96);
+  color: #191916;
+  border: 1px solid rgba(214, 178, 94, .7);
+}
+
+.reserva-card p {
+  margin: 7px 0;
+  font-size: 14px;
+  line-height: 1.35;
+}
+
+.reserva-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8px;
+}
+
+.estado {
+  padding: 6px 10px;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: bold;
+  background: #ddd;
+}
+
+.estado-confirmada {
+  background: #5f6f3a;
+  color: white;
+}
+
+.estado-cancelada {
+  background: #8b1e1e;
+  color: white;
+}
+
+.estado-noshow {
+  background: #222;
+  color: white;
+}
+
+.estado-liberada {
+  background: #d96b27;
+  color: white;
+}
+
+.admin-actions {
+  margin-top: 14px;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+
+.admin-actions button {
+  margin-top: 0;
+  padding: 12px;
+  font-size: 13px;
+}
