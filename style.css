@@ -7,7 +7,7 @@ body {
   font-family: Arial, sans-serif;
   min-height: 100vh;
   background:
-    linear-gradient(rgba(0,0,0,.55), rgba(0,0,0,.88)),
+    linear-gradient(rgba(0,0,0,.58), rgba(0,0,0,.88)),
     url("hero-fogo.png");
   background-size: cover;
   background-position: center;
@@ -26,20 +26,27 @@ body {
 
 .hero-card {
   width: 100%;
-  max-width: 460px;
-  padding: 28px 18px;
+  max-width: 470px;
+  padding: 26px 18px;
   border-radius: 28px;
-  background: rgba(10, 10, 8, .78);
-  border: 1px solid rgba(214, 178, 94, .35);
+  background: rgba(10, 10, 8, .82);
+  border: 1px solid rgba(214, 178, 94, .38);
   backdrop-filter: blur(10px);
-  box-shadow: 0 20px 60px rgba(0,0,0,.45);
+  box-shadow: 0 20px 60px rgba(0,0,0,.48);
+}
+
+.logo-box {
+  background: #fff;
+  width: 230px;
+  max-width: 82%;
+  margin: 0 auto 22px;
+  border-radius: 8px;
+  padding: 12px;
 }
 
 .logo {
-  width: 220px;
-  max-width: 82%;
+  width: 100%;
   display: block;
-  margin: 0 auto 22px;
   object-fit: contain;
 }
 
@@ -55,10 +62,6 @@ h1 {
   color: #d6b25e;
   margin: 8px 0 24px;
   font-size: 15px;
-}
-
-.form-box {
-  width: 100%;
 }
 
 label {
@@ -114,24 +117,55 @@ button:hover {
   line-height: 1.4;
 }
 
-.status-box a {
-  display: block;
-  margin-top: 12px;
-  padding: 13px;
-  border-radius: 999px;
-  background: #5f6f3a;
-  color: white;
-  text-decoration: none;
-}
-
 .hidden {
   display: none;
 }
 
 .address {
   text-align: center;
-  margin: 22px 0 0;
+  margin: 18px 0 0;
   font-size: 13px;
   color: #e6d6b6;
   line-height: 1.4;
+}
+
+.admin-link {
+  background: transparent;
+  color: #d6b25e;
+  border: 1px solid rgba(214, 178, 94, .5);
+  margin-top: 18px;
+}
+
+.horas-box {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+}
+
+.hora-btn {
+  margin: 0;
+  padding: 13px 8px;
+  border-radius: 14px;
+  background: rgba(255,255,255,.94);
+  color: #171717;
+  border: 1px solid rgba(214, 178, 94, .55);
+  font-size: 15px;
+  font-weight: bold;
+}
+
+.hora-btn.selected {
+  background: #d96b27;
+  color: white;
+  border-color: #d96b27;
+}
+
+.mini-text {
+  grid-column: 1 / -1;
+  text-align: center;
+  background: rgba(247, 234, 209, .95);
+  color: #191916;
+  padding: 14px;
+  border-radius: 16px;
+  margin: 0;
+  font-weight: bold;
 }
