@@ -9,44 +9,50 @@
 
 <body>
 
-  <main class="app">
-    <section class="hero-card">
+<main class="app">
+  <section class="hero-card">
 
+    <div class="logo-box">
       <img src="logo-fogo-compacto.png" alt="FOGO" class="logo">
+    </div>
 
-      <h1>Panel Admin</h1>
-      <p class="subtitle">Gestión de reservas FOGO</p>
+    <h1>Panel Admin</h1>
+    <p class="subtitle">Gestión de reservas FOGO</p>
 
-      <div id="loginBox">
-        <label>Clave administrador</label>
-        <input type="password" id="adminPassword" placeholder="Ingresa la clave">
-        <button onclick="loginAdmin()">Ingresar</button>
+    <div id="loginBox">
+      <label>Clave de administrador</label>
+      <input type="password" id="adminPassword" placeholder="Ingresa la clave">
+      <button onclick="loginAdmin()">Ingresar</button>
+    </div>
+
+    <div id="adminBox" class="hidden">
+
+      <label>Fecha a consultar</label>
+      <input type="date" id="fechaAdmin">
+
+      <button onclick="cargarReservas()">Ver reservas</button>
+
+      <div id="adminStatus" class="status-box">
+        Selecciona una fecha para ver reservas.
       </div>
 
-      <div id="adminBox" class="hidden">
+      <div id="listaReservas"></div>
 
-        <label>Fecha a consultar</label>
-        <input type="date" id="fechaAdmin">
+      <button class="admin-link" onclick="window.location.href='index.html'">
+        Volver a reservas
+      </button>
 
-        <button onclick="cargarReservas()">Ver reservas</button>
+    </div>
 
-        <div id="adminStatus" class="status-box">
-          Selecciona una fecha para ver reservas.
-        </div>
-
-        <div id="listaReservas"></div>
-
-      </div>
-
-    </section>
-  </main>
+  </section>
+</main>
 
 <script>
 const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbwNgxo9xzZRWnYzDbGCg5TKDC0G5TwMnXW5tr71ZK2lX-NgEEOdneoj0jHTv48MG-ehkQ/exec";
 const ADMIN_PASSWORD = "FOGO2026123456789";
 
 function loginAdmin() {
-  const pass = document.getElementById("adminPassword").value;
+  const pass = document.getElementById("adminPassword").value.trim();
 
   if (pass !== ADMIN_PASSWORD) {
     alert("Clave incorrecta");
@@ -79,38 +85,62 @@ async function cargarReservas() {
       return;
     }
 
-    const reservasDia = data.reservas.filter(r => String(r.FECHA_RESERVA) === fecha);
+    const reservasDia = data.reservas.filter(r => {
+      return String(r.FECHA_RESERVA).trim() === fecha;
+    });
 
     if (reservasDia.length === 0) {
       status.innerHTML = "No hay reservas para esta fecha.";
       return;
     }
 
-    status.innerHTML = `${reservasDia.length} reserva(s) encontradas`;
+    status.innerHTML = `${reservasDia.length} reserva(s) para esta fecha`;
 
-    lista.innerHTML = reservasDia.map(r => `
-      <div class="status-box" style="text-align:left;">
-        <strong>${r.HORA_RESERVA} · ${r.NOMBRE_COMPLETO}</strong><br>
-        Código: ${r.CODIGO_RESERVA}<br>
-        Personas: ${r.PERSONAS}<br>
-        Celular: ${r.CELULAR}<br>
-        Estado: <strong>${r.ESTADO}</strong><br>
-        Observaciones: ${r.OBSERVACIONES || "Sin observaciones"}
-
-        <button onclick="cambiarEstado('${r.CODIGO_RESERVA}', 'CONFIRMADA')">Confirmada</button>
-        <button onclick="cambiarEstado('${r.CODIGO_RESERVA}', 'CANCELADA')">Cancelar</button>
-        <button onclick="cambiarEstado('${r.CODIGO_RESERVA}', 'NO SHOW')">No show</button>
-        <button onclick="cambiarEstado('${r.CODIGO_RESERVA}', 'LIBERADA')">Liberar mesa</button>
-      </div>
-    `).join("");
+    lista.innerHTML = reservasDia.map(r => crearCardReserva(r)).join("");
 
   } catch (error) {
     status.innerHTML = "Error de conexión.";
   }
 }
 
+function crearCardReserva(r) {
+  const estado = r.ESTADO || "SIN ESTADO";
+
+  return `
+    <div class="reserva-card">
+      <div class="reserva-top">
+        <strong>${r.HORA_RESERVA || ""}</strong>
+        <span class="estado ${claseEstado(estado)}">${estado}</span>
+      </div>
+
+      <p><strong>Código:</strong> ${r.CODIGO_RESERVA || ""}</p>
+      <p><strong>Cliente:</strong> ${r.NOMBRE_COMPLETO || ""}</p>
+      <p><strong>Cédula:</strong> ${r.CEDULA || ""}</p>
+      <p><strong>Celular:</strong> ${r.CELULAR || ""}</p>
+      <p><strong>Personas:</strong> ${r.PERSONAS || ""}</p>
+      <p><strong>Turno:</strong> ${r.TURNO || ""}</p>
+      <p><strong>Observaciones:</strong> ${r.OBSERVACIONES || "Sin observaciones"}</p>
+
+      <div class="admin-actions">
+        <button onclick="cambiarEstado('${r.CODIGO_RESERVA}', 'CONFIRMADA')">Confirmar</button>
+        <button onclick="cambiarEstado('${r.CODIGO_RESERVA}', 'CANCELADA')">Cancelar</button>
+        <button onclick="cambiarEstado('${r.CODIGO_RESERVA}', 'NO SHOW')">No show</button>
+        <button onclick="cambiarEstado('${r.CODIGO_RESERVA}', 'LIBERADA')">Liberar mesa</button>
+      </div>
+    </div>
+  `;
+}
+
+function claseEstado(estado) {
+  if (estado === "CONFIRMADA") return "estado-confirmada";
+  if (estado === "CANCELADA") return "estado-cancelada";
+  if (estado === "NO SHOW") return "estado-noshow";
+  if (estado === "LIBERADA") return "estado-liberada";
+  return "";
+}
+
 async function cambiarEstado(codigoReserva, estado) {
-  const confirmar = confirm(`¿Cambiar reserva ${codigoReserva} a ${estado}?`);
+  const confirmar = confirm(`¿Cambiar la reserva ${codigoReserva} a ${estado}?`);
 
   if (!confirmar) return;
 
@@ -120,19 +150,19 @@ async function cambiarEstado(codigoReserva, estado) {
       body: JSON.stringify({
         action: "actualizarEstado",
         adminPassword: ADMIN_PASSWORD,
-        codigoReserva,
-        estado
+        codigoReserva: codigoReserva,
+        estado: estado
       })
     });
 
     const result = await response.json();
 
     if (!result.ok) {
-      alert(result.message || "No se pudo actualizar.");
+      alert(result.message || "No se pudo actualizar la reserva.");
       return;
     }
 
-    alert("Estado actualizado correctamente.");
+    alert("Reserva actualizada correctamente.");
     cargarReservas();
 
   } catch (error) {
