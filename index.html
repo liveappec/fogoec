@@ -12,7 +12,9 @@
   <main class="app">
 
     <section class="hero-card">
-      <img src="logo-fogo.png" alt="FOGO Restaurante" class="logo">
+      <div class="logo-box">
+        <img src="logo-fogo.png" alt="FOGO Restaurante" class="logo">
+      </div>
 
       <h1>Reserva tu mesa</h1>
       <p class="subtitle">FOGO Restaurante Ibarra · Comer es vida</p>
@@ -37,9 +39,11 @@
         <input type="date" id="fecha">
 
         <label>Hora</label>
-        <select id="hora" disabled>
-          <option value="">Primero selecciona una fecha</option>
-        </select>
+        <div id="horasBox" class="horas-box">
+          <p class="mini-text">Primero selecciona una fecha.</p>
+        </div>
+
+        <input type="hidden" id="hora">
 
         <div id="disponibilidad" class="status-box">
           Selecciona fecha y hora para ver disponibilidad.
@@ -66,6 +70,10 @@
         </div>
 
       </div>
+
+      <button class="admin-link" onclick="window.location.href='admin.html'">
+        Ingresar como administrador
+      </button>
 
       <p class="address">
         En el Rosal de las Malvinas, tras la Loma de Guayabillas, Ibarra Ecuador
