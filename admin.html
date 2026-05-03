@@ -27,13 +27,14 @@
 
     <div id="adminBox" class="hidden">
 
-      <label>Fecha a consultar</label>
+      <label>Filtrar por fecha</label>
       <input type="date" id="fechaAdmin">
 
-      <button onclick="cargarReservas()">Ver reservas</button>
+      <button onclick="cargarReservasPorFecha()">Ver reservas de esta fecha</button>
+      <button class="admin-link" onclick="cargarTodasReservas()">Ver todas las reservas</button>
 
       <div id="adminStatus" class="status-box">
-        Selecciona una fecha para ver reservas.
+        Puedes ver todas las reservas o filtrar por fecha.
       </div>
 
       <div id="listaReservas"></div>
@@ -63,15 +64,24 @@ function loginAdmin() {
   document.getElementById("adminBox").classList.remove("hidden");
 }
 
-async function cargarReservas() {
+async function cargarTodasReservas() {
+  await cargarReservas("");
+}
+
+async function cargarReservasPorFecha() {
   const fecha = document.getElementById("fechaAdmin").value;
-  const status = document.getElementById("adminStatus");
-  const lista = document.getElementById("listaReservas");
 
   if (!fecha) {
     alert("Selecciona una fecha");
     return;
   }
+
+  await cargarReservas(fecha);
+}
+
+async function cargarReservas(fechaFiltro) {
+  const status = document.getElementById("adminStatus");
+  const lista = document.getElementById("listaReservas");
 
   status.innerHTML = "Cargando reservas...";
   lista.innerHTML = "";
@@ -85,18 +95,26 @@ async function cargarReservas() {
       return;
     }
 
-    const reservasDia = data.reservas.filter(r => {
-      return String(r.FECHA_RESERVA).trim() === fecha;
-    });
+    let reservas = data.reservas || [];
 
-    if (reservasDia.length === 0) {
-      status.innerHTML = "No hay reservas para esta fecha.";
+    if (fechaFiltro) {
+      reservas = reservas.filter(r => String(r.FECHA_RESERVA).trim() === fechaFiltro);
+    }
+
+    if (reservas.length === 0) {
+      status.innerHTML = fechaFiltro
+        ? "No hay reservas para esta fecha."
+        : "No hay reservas registradas.";
       return;
     }
 
-    status.innerHTML = `${reservasDia.length} reserva(s) para esta fecha`;
+    reservas.sort((a, b) => {
+      return String(a.FECHA_RESERVA + a.HORA_RESERVA).localeCompare(String(b.FECHA_RESERVA + b.HORA_RESERVA));
+    });
 
-    lista.innerHTML = reservasDia.map(r => crearCardReserva(r)).join("");
+    status.innerHTML = `${reservas.length} reserva(s) encontrada(s)`;
+
+    lista.innerHTML = reservas.map(r => crearCardReserva(r)).join("");
 
   } catch (error) {
     status.innerHTML = "Error de conexión.";
@@ -109,7 +127,7 @@ function crearCardReserva(r) {
   return `
     <div class="reserva-card">
       <div class="reserva-top">
-        <strong>${r.HORA_RESERVA || ""}</strong>
+        <strong>${r.FECHA_RESERVA || ""} · ${r.HORA_RESERVA || ""}</strong>
         <span class="estado ${claseEstado(estado)}">${estado}</span>
       </div>
 
@@ -150,8 +168,8 @@ async function cambiarEstado(codigoReserva, estado) {
       body: JSON.stringify({
         action: "actualizarEstado",
         adminPassword: ADMIN_PASSWORD,
-        codigoReserva: codigoReserva,
-        estado: estado
+        codigoReserva,
+        estado
       })
     });
 
@@ -163,7 +181,7 @@ async function cambiarEstado(codigoReserva, estado) {
     }
 
     alert("Reserva actualizada correctamente.");
-    cargarReservas();
+    cargarTodasReservas();
 
   } catch (error) {
     alert("Error de conexión.");
