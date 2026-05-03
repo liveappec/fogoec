@@ -1,126 +1,77 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-<meta charset="UTF-8">
-<title>FOGO Reservas</title>
-<link rel="stylesheet" href="style.css">
+  <meta charset="UTF-8">
+  <title>FOGO Reservas</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="style.css">
 </head>
 
 <body>
 
-<div class="container">
+  <main class="app">
 
-  <img src="logo-fogo.png" class="logo">
+    <section class="hero-card">
+      <img src="logo-fogo.png" alt="FOGO Restaurante" class="logo">
 
-  <h1>Reservar mesa</h1>
+      <h1>Reserva tu mesa</h1>
+      <p class="subtitle">FOGO Restaurante Ibarra · Comer es vida</p>
 
-  <!-- PERSONAS -->
-  <label>Personas</label>
-  <select id="personas">
-    <option value="">Seleccionar</option>
-    <option>2</option><option>3</option><option>4</option>
-    <option>5</option><option>6</option><option>7</option>
-    <option>8</option><option>10</option>
-  </select>
+      <div class="form-box">
 
-  <!-- FECHA -->
-  <label>Fecha</label>
-  <input type="date" id="fecha">
+        <label>Personas</label>
+        <select id="personas">
+          <option value="">Seleccionar</option>
+          <option value="2">2 personas</option>
+          <option value="3">3 personas</option>
+          <option value="4">4 personas</option>
+          <option value="5">5 personas</option>
+          <option value="6">6 personas</option>
+          <option value="7">7 personas</option>
+          <option value="8">8 personas</option>
+          <option value="10">10 personas</option>
+          <option value="15">Más de 15 personas</option>
+        </select>
 
-  <!-- HORA -->
-  <label>Hora</label>
-  <input type="time" id="hora">
+        <label>Fecha</label>
+        <input type="date" id="fecha">
 
-  <!-- DISPONIBILIDAD -->
-  <div id="disponibilidad"></div>
+        <label>Hora</label>
+        <input type="time" id="hora">
 
-  <!-- DATOS -->
-  <div id="formDatos" style="display:none;">
+        <div id="disponibilidad" class="status-box">
+          Selecciona fecha y hora para ver disponibilidad.
+        </div>
 
-    <label>Nombre</label>
-    <input type="text" id="nombre">
+        <div id="formDatos" class="datos-box hidden">
 
-    <label>Cédula</label>
-    <input type="text" id="cedula">
+          <label>Nombre completo</label>
+          <input type="text" id="nombre">
 
-    <label>Celular</label>
-    <input type="text" id="celular">
+          <label>Cédula</label>
+          <input type="text" id="cedula">
 
-    <label>Instagram (opcional)</label>
-    <input type="text" id="instagram">
+          <label>Celular</label>
+          <input type="text" id="celular">
 
-    <label>Observaciones</label>
-    <textarea id="observaciones"></textarea>
+          <label>Instagram opcional</label>
+          <input type="text" id="instagram">
 
-    <button onclick="crearReserva()">Confirmar Reserva</button>
+          <label>Observaciones</label>
+          <textarea id="observaciones"></textarea>
 
-  </div>
+          <button onclick="crearReserva()">Confirmar reserva</button>
+        </div>
 
-</div>
+      </div>
 
-<script>
+      <p class="address">
+        En el Rosal de las Malvinas, tras la Loma de Guayabillas, Ibarra Ecuador
+      </p>
+    </section>
 
-const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbwNgxo9xzZRWnYzDbGCg5TKDC0G5TwMnXW5tr71ZK2lX-NgEEOdneoj0jHTv48MG-ehkQ/exec";
+  </main>
 
-document.getElementById("hora").addEventListener("change", verificarDisponibilidad);
-document.getElementById("fecha").addEventListener("change", verificarDisponibilidad);
-
-async function verificarDisponibilidad() {
-  const fecha = document.getElementById("fecha").value;
-  const hora = document.getElementById("hora").value;
-
-  if (!fecha || !hora) return;
-
-  const res = await fetch(`${WEB_APP_URL}?action=disponibilidad&fecha=${fecha}&hora=${hora}`);
-  const data = await res.json();
-
-  const div = document.getElementById("disponibilidad");
-  const form = document.getElementById("formDatos");
-
-  if (data.mesasDisponibles > 0) {
-    div.innerHTML = `<p>${data.mesasDisponibles} mesas disponibles</p>`;
-    form.style.display = "block";
-  } else {
-    div.innerHTML = `
-      <p>No hay mesas disponibles</p>
-      <p>${data.proximaLiberacionTexto}</p>
-      <a href="https://wa.me/593984890621">Contactar por WhatsApp</a>
-    `;
-    form.style.display = "none";
-  }
-}
-
-async function crearReserva() {
-
-  const data = {
-    action: "crearReserva",
-    nombreCompleto: document.getElementById("nombre").value,
-    cedula: document.getElementById("cedula").value,
-    celular: document.getElementById("celular").value,
-    instagram: document.getElementById("instagram").value,
-    personas: document.getElementById("personas").value,
-    fechaReserva: document.getElementById("fecha").value,
-    horaReserva: document.getElementById("hora").value,
-    observaciones: document.getElementById("observaciones").value
-  };
-
-  const res = await fetch(WEB_APP_URL, {
-    method: "POST",
-    body: JSON.stringify(data)
-  });
-
-  const result = await res.json();
-
-  if (result.ok) {
-    alert("Reserva confirmada");
-
-    window.open(`https://wa.me/593984890621?text=${encodeURIComponent(result.waFull)}`);
-  } else {
-    alert(result.message);
-  }
-}
-
-</script>
-
+  <script src="script.js"></script>
 </body>
 </html>
