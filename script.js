@@ -163,10 +163,13 @@ async function crearReserva() {
 
     if (!result.ok) {
       alert(result.message || "No se pudo crear la reserva.");
+      verificarDisponibilidad();
       return;
     }
 
     alert(`Reserva confirmada. Código: ${result.codigoReserva}`);
+
+    verificarDisponibilidad();
 
   } catch (error) {
     alert("Error de conexión. Intenta nuevamente.");
