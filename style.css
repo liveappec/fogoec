@@ -12,7 +12,7 @@ body {
   background-size: cover;
   background-position: center;
   background-attachment: fixed;
-  color: #fff;
+  color: #191916;
 }
 
 .app {
@@ -29,19 +29,17 @@ body {
   max-width: 470px;
   padding: 26px 18px;
   border-radius: 28px;
-  background: rgba(10, 10, 8, .82);
-  border: 1px solid rgba(214, 178, 94, .38);
-  backdrop-filter: blur(10px);
+  background: rgba(255, 250, 239, .96);
+  border: 1px solid rgba(214, 178, 94, .75);
   box-shadow: 0 20px 60px rgba(0,0,0,.48);
 }
 
 .logo-box {
-  background: #fff;
+  background: transparent;
   width: 230px;
   max-width: 82%;
   margin: 0 auto 22px;
-  border-radius: 8px;
-  padding: 12px;
+  padding: 0;
 }
 
 .logo {
@@ -53,22 +51,24 @@ body {
 h1 {
   text-align: center;
   margin: 0;
-  color: #f7ead1;
+  color: #191916;
   font-size: 31px;
 }
 
 .subtitle {
   text-align: center;
-  color: #d6b25e;
+  color: #8a7d2f;
   margin: 8px 0 24px;
   font-size: 15px;
+  font-weight: bold;
 }
 
 label {
   display: block;
   margin: 14px 0 6px;
-  color: #f0dfbf;
+  color: #191916;
   font-size: 14px;
+  font-weight: bold;
 }
 
 input,
@@ -77,8 +77,8 @@ textarea {
   width: 100%;
   padding: 14px;
   border-radius: 15px;
-  border: 1px solid rgba(214, 178, 94, .55);
-  background: rgba(255,255,255,.94);
+  border: 1px solid rgba(138, 125, 47, .55);
+  background: #fff;
   color: #111;
   font-size: 16px;
   outline: none;
@@ -110,7 +110,7 @@ button:hover {
   margin: 18px 0;
   padding: 15px;
   border-radius: 18px;
-  background: rgba(247, 234, 209, .95);
+  background: #f1e3c3;
   color: #191916;
   text-align: center;
   font-weight: bold;
@@ -125,15 +125,15 @@ button:hover {
   text-align: center;
   margin: 18px 0 0;
   font-size: 13px;
-  color: #e6d6b6;
+  color: #4a3d22;
   line-height: 1.4;
 }
 
 .admin-link {
   background: transparent;
-  color: #d6b25e;
-  border: 1px solid rgba(214, 178, 94, .5);
-  margin-top: 18px;
+  color: #8a7d2f;
+  border: 1px solid rgba(138, 125, 47, .5);
+  margin-top: 14px;
 }
 
 .horas-box {
@@ -146,9 +146,9 @@ button:hover {
   margin: 0;
   padding: 13px 8px;
   border-radius: 14px;
-  background: rgba(255,255,255,.94);
+  background: #fff;
   color: #171717;
-  border: 1px solid rgba(214, 178, 94, .55);
+  border: 1px solid rgba(138, 125, 47, .55);
   font-size: 15px;
   font-weight: bold;
 }
@@ -162,20 +162,21 @@ button:hover {
 .mini-text {
   grid-column: 1 / -1;
   text-align: center;
-  background: rgba(247, 234, 209, .95);
+  background: #f1e3c3;
   color: #191916;
   padding: 14px;
   border-radius: 16px;
   margin: 0;
   font-weight: bold;
 }
+
 .reserva-card {
   margin-top: 18px;
   padding: 16px;
   border-radius: 20px;
-  background: rgba(247, 234, 209, .96);
+  background: #fff;
   color: #191916;
-  border: 1px solid rgba(214, 178, 94, .7);
+  border: 1px solid rgba(138, 125, 47, .55);
 }
 
 .reserva-card p {
