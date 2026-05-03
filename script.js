@@ -1,8 +1,95 @@
 const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbwNgxo9xzZRWnYzDbGCg5TKDC0G5TwMnXW5tr71ZK2lX-NgEEOdneoj0jHTv48MG-ehkQ/exec";
 const WHATSAPP_NUMBER = "593984890621";
 
-document.getElementById("fecha").addEventListener("change", verificarDisponibilidad);
+document.getElementById("fecha").addEventListener("change", cargarHorasDisponibles);
 document.getElementById("hora").addEventListener("change", verificarDisponibilidad);
+
+function cargarHorasDisponibles() {
+  const fecha = document.getElementById("fecha").value;
+  const horaSelect = document.getElementById("hora");
+  const disponibilidad = document.getElementById("disponibilidad");
+  const formDatos = document.getElementById("formDatos");
+
+  horaSelect.innerHTML = "";
+  formDatos.classList.add("hidden");
+
+  if (!fecha) {
+    horaSelect.disabled = true;
+    horaSelect.innerHTML = `<option value="">Primero selecciona una fecha</option>`;
+    disponibilidad.innerHTML = "Selecciona fecha y hora para ver disponibilidad.";
+    return;
+  }
+
+  const horarios = obtenerHorariosPorFecha(fecha);
+
+  if (horarios.length === 0) {
+    horaSelect.disabled = true;
+    horaSelect.innerHTML = `<option value="">FOGO no atiende este día</option>`;
+    disponibilidad.innerHTML = "FOGO no atiende este día. Selecciona otra fecha.";
+    return;
+  }
+
+  horaSelect.disabled = false;
+  horaSelect.innerHTML = `<option value="">Selecciona una hora</option>`;
+
+  horarios.forEach(hora => {
+    const option = document.createElement("option");
+    option.value = hora;
+    option.textContent = hora;
+    horaSelect.appendChild(option);
+  });
+
+  disponibilidad.innerHTML = "Selecciona una hora para ver disponibilidad.";
+}
+
+function obtenerHorariosPorFecha(fecha) {
+  const partes = fecha.split("-");
+  const date = new Date(Number(partes[0]), Number(partes[1]) - 1, Number(partes[2]));
+  const dia = date.getDay();
+
+  // 0 domingo, 1 lunes, 2 martes, 3 miércoles, 4 jueves, 5 viernes, 6 sábado
+
+  if (dia === 1) {
+    return [];
+  }
+
+  if (dia >= 2 && dia <= 4) {
+    return generarBloqueHoras("18:30", "22:00");
+  }
+
+  if (dia === 5 || dia === 6) {
+    return [
+      ...generarBloqueHoras("12:30", "15:30"),
+      ...generarBloqueHoras("18:30", "23:00")
+    ];
+  }
+
+  if (dia === 0) {
+    return generarBloqueHoras("12:30", "16:00");
+  }
+
+  return [];
+}
+
+function generarBloqueHoras(inicio, fin) {
+  const horas = [];
+
+  let [h, m] = inicio.split(":").map(Number);
+  const [hFin, mFin] = fin.split(":").map(Number);
+
+  while (h < hFin || (h === hFin && m <= mFin)) {
+    const horaTexto = `${String(h).padStart(2, "0")}:${String(m).padStart(2, "0")}`;
+    horas.push(horaTexto);
+
+    m += 30;
+    if (m >= 60) {
+      h += 1;
+      m = 0;
+    }
+  }
+
+  return horas;
+}
 
 async function verificarDisponibilidad() {
   const fecha = document.getElementById("fecha").value;
@@ -29,7 +116,10 @@ async function verificarDisponibilidad() {
     }
 
     if (data.mesasDisponibles > 0) {
-      const textoMesa = data.mesasDisponibles === 1 ? "1 mesa disponible" : `${data.mesasDisponibles} mesas disponibles`;
+      const textoMesa = data.mesasDisponibles === 1
+        ? "1 mesa disponible"
+        : `${data.mesasDisponibles} mesas disponibles`;
+
       disponibilidad.innerHTML = textoMesa;
       formDatos.classList.remove("hidden");
     } else {
