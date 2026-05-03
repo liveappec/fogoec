@@ -1,30 +1,48 @@
 const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbwNgxo9xzZRWnYzDbGCg5TKDC0G5TwMnXW5tr71ZK2lX-NgEEOdneoj0jHTv48MG-ehkQ/exec";
+const WHATSAPP_NUMBER = "593984890621";
 
-document.getElementById("hora").addEventListener("change", verificarDisponibilidad);
 document.getElementById("fecha").addEventListener("change", verificarDisponibilidad);
+document.getElementById("hora").addEventListener("change", verificarDisponibilidad);
 
 async function verificarDisponibilidad() {
   const fecha = document.getElementById("fecha").value;
   const hora = document.getElementById("hora").value;
+  const disponibilidad = document.getElementById("disponibilidad");
+  const formDatos = document.getElementById("formDatos");
 
-  if (!fecha || !hora) return;
+  if (!fecha || !hora) {
+    disponibilidad.innerHTML = "Selecciona fecha y hora para ver disponibilidad.";
+    formDatos.classList.add("hidden");
+    return;
+  }
 
-  const res = await fetch(`${WEB_APP_URL}?action=disponibilidad&fecha=${fecha}&hora=${hora}`);
-  const data = await res.json();
+  disponibilidad.innerHTML = "Consultando disponibilidad...";
+  formDatos.classList.add("hidden");
 
-  const div = document.getElementById("disponibilidad");
-  const form = document.getElementById("formDatos");
+  try {
+    const response = await fetch(`${WEB_APP_URL}?action=disponibilidad&fecha=${fecha}&hora=${hora}`);
+    const data = await response.json();
 
-  if (data.mesasDisponibles > 0) {
-    div.innerHTML = `<p>${data.mesasDisponibles} mesas disponibles</p>`;
-    form.style.display = "block";
-  } else {
-    div.innerHTML = `
-      <p>No hay mesas disponibles en este horario</p>
-      <p>Próxima liberación estimada ${data.proximaLiberacionTexto || ""}</p>
-      <a href="https://wa.me/593984890621" target="_blank">Contáctanos por WhatsApp</a>
-    `;
-    form.style.display = "none";
+    if (!data.ok) {
+      disponibilidad.innerHTML = data.message || "No se pudo consultar disponibilidad.";
+      return;
+    }
+
+    if (data.mesasDisponibles > 0) {
+      const textoMesa = data.mesasDisponibles === 1 ? "1 mesa disponible" : `${data.mesasDisponibles} mesas disponibles`;
+      disponibilidad.innerHTML = textoMesa;
+      formDatos.classList.remove("hidden");
+    } else {
+      disponibilidad.innerHTML = `
+        No hay mesas disponibles en este horario.<br>
+        Próxima liberación estimada ${data.proximaLiberacionTexto || "por confirmar"}.
+        <a href="https://wa.me/${WHATSAPP_NUMBER}" target="_blank">Contáctanos por WhatsApp</a>
+      `;
+      formDatos.classList.add("hidden");
+    }
+
+  } catch (error) {
+    disponibilidad.innerHTML = "Error de conexión. Intenta nuevamente.";
   }
 }
 
@@ -41,21 +59,32 @@ async function crearReserva() {
     observaciones: document.getElementById("observaciones").value.trim()
   };
 
-  const res = await fetch(WEB_APP_URL, {
-    method: "POST",
-    body: JSON.stringify(data)
-  });
+  if (!data.nombreCompleto || !data.cedula || !data.celular || !data.personas || !data.fechaReserva || !data.horaReserva) {
+    alert("Completa todos los campos obligatorios.");
+    return;
+  }
 
-  const result = await res.json();
+  try {
+    const response = await fetch(WEB_APP_URL, {
+      method: "POST",
+      body: JSON.stringify(data)
+    });
 
-  if (result.ok) {
-    alert("Reserva confirmada");
+    const result = await response.json();
+
+    if (!result.ok) {
+      alert(result.message || "No se pudo crear la reserva.");
+      return;
+    }
+
+    alert(`Reserva confirmada. Código: ${result.codigoReserva}`);
 
     window.open(
-      `https://wa.me/593984890621?text=${encodeURIComponent(result.waFull)}`,
+      `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(result.waFull)}`,
       "_blank"
     );
-  } else {
-    alert(result.message);
+
+  } catch (error) {
+    alert("Error de conexión. Intenta nuevamente.");
   }
 }
