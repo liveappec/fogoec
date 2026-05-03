@@ -1,1 +1,145 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>FOGO Admin</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="style.css">
+</head>
 
+<body>
+
+  <main class="app">
+    <section class="hero-card">
+
+      <img src="logo-fogo-compacto.png" alt="FOGO" class="logo">
+
+      <h1>Panel Admin</h1>
+      <p class="subtitle">Gestión de reservas FOGO</p>
+
+      <div id="loginBox">
+        <label>Clave administrador</label>
+        <input type="password" id="adminPassword" placeholder="Ingresa la clave">
+        <button onclick="loginAdmin()">Ingresar</button>
+      </div>
+
+      <div id="adminBox" class="hidden">
+
+        <label>Fecha a consultar</label>
+        <input type="date" id="fechaAdmin">
+
+        <button onclick="cargarReservas()">Ver reservas</button>
+
+        <div id="adminStatus" class="status-box">
+          Selecciona una fecha para ver reservas.
+        </div>
+
+        <div id="listaReservas"></div>
+
+      </div>
+
+    </section>
+  </main>
+
+<script>
+const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbwNgxo9xzZRWnYzDbGCg5TKDC0G5TwMnXW5tr71ZK2lX-NgEEOdneoj0jHTv48MG-ehkQ/exec";
+const ADMIN_PASSWORD = "FOGO2026123456789";
+
+function loginAdmin() {
+  const pass = document.getElementById("adminPassword").value;
+
+  if (pass !== ADMIN_PASSWORD) {
+    alert("Clave incorrecta");
+    return;
+  }
+
+  document.getElementById("loginBox").classList.add("hidden");
+  document.getElementById("adminBox").classList.remove("hidden");
+}
+
+async function cargarReservas() {
+  const fecha = document.getElementById("fechaAdmin").value;
+  const status = document.getElementById("adminStatus");
+  const lista = document.getElementById("listaReservas");
+
+  if (!fecha) {
+    alert("Selecciona una fecha");
+    return;
+  }
+
+  status.innerHTML = "Cargando reservas...";
+  lista.innerHTML = "";
+
+  try {
+    const response = await fetch(`${WEB_APP_URL}?action=reservas`);
+    const data = await response.json();
+
+    if (!data.ok) {
+      status.innerHTML = "No se pudieron cargar las reservas.";
+      return;
+    }
+
+    const reservasDia = data.reservas.filter(r => String(r.FECHA_RESERVA) === fecha);
+
+    if (reservasDia.length === 0) {
+      status.innerHTML = "No hay reservas para esta fecha.";
+      return;
+    }
+
+    status.innerHTML = `${reservasDia.length} reserva(s) encontradas`;
+
+    lista.innerHTML = reservasDia.map(r => `
+      <div class="status-box" style="text-align:left;">
+        <strong>${r.HORA_RESERVA} · ${r.NOMBRE_COMPLETO}</strong><br>
+        Código: ${r.CODIGO_RESERVA}<br>
+        Personas: ${r.PERSONAS}<br>
+        Celular: ${r.CELULAR}<br>
+        Estado: <strong>${r.ESTADO}</strong><br>
+        Observaciones: ${r.OBSERVACIONES || "Sin observaciones"}
+
+        <button onclick="cambiarEstado('${r.CODIGO_RESERVA}', 'CONFIRMADA')">Confirmada</button>
+        <button onclick="cambiarEstado('${r.CODIGO_RESERVA}', 'CANCELADA')">Cancelar</button>
+        <button onclick="cambiarEstado('${r.CODIGO_RESERVA}', 'NO SHOW')">No show</button>
+        <button onclick="cambiarEstado('${r.CODIGO_RESERVA}', 'LIBERADA')">Liberar mesa</button>
+      </div>
+    `).join("");
+
+  } catch (error) {
+    status.innerHTML = "Error de conexión.";
+  }
+}
+
+async function cambiarEstado(codigoReserva, estado) {
+  const confirmar = confirm(`¿Cambiar reserva ${codigoReserva} a ${estado}?`);
+
+  if (!confirmar) return;
+
+  try {
+    const response = await fetch(WEB_APP_URL, {
+      method: "POST",
+      body: JSON.stringify({
+        action: "actualizarEstado",
+        adminPassword: ADMIN_PASSWORD,
+        codigoReserva,
+        estado
+      })
+    });
+
+    const result = await response.json();
+
+    if (!result.ok) {
+      alert(result.message || "No se pudo actualizar.");
+      return;
+    }
+
+    alert("Estado actualizado correctamente.");
+    cargarReservas();
+
+  } catch (error) {
+    alert("Error de conexión.");
+  }
+}
+</script>
+
+</body>
+</html>
